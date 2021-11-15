@@ -1,0 +1,37 @@
+{
+    "name": "shwimple",
+    "version": "1.0.0",
+    "description": "shwimple - a simple HTML writer",
+    "main": "dist/index.js",
+    "module": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "type": "module",
+    "scripts": {
+        "ts-types": " tsc --emitDeclarationOnly --outDir dist",
+        "build": "rimraf dist && node ./esbuild.js && npm run ts-types"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/wooffet/shwimple.git"
+    },
+    "keywords": [
+        "shwimple",
+        "wooffet",
+        "html",
+        "writer"
+    ],
+    "author": "wooffet",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/wooffet/shwimple/issues"
+    },
+    "homepage": "https://github.com/wooffet/shwimple#readme",
+    "devDependencies": {
+        "esbuild": "^0.13.13",
+        "rimraf": "^3.0.2",
+        "typescript": "^4.4.4"
+    },
+    "engines": {
+        "node": ">=14.17.0 || >=16.0.0"
+    }
+}
