@@ -1,6 +1,6 @@
 {
     "name": "shwimple",
-    "version": "2.0.0",
+    "version": "3.0.0",
     "description": "shwimple - a simple HTML writer",
     "main": "dist/index.js",
     "module": "dist/index.js",
@@ -18,7 +18,8 @@
         "shwimple",
         "wooffet",
         "html",
-        "writer"
+        "writer",
+        "renderer"
     ],
     "author": "wooffet",
     "license": "MIT",
