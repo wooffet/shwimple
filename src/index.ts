@@ -1,4 +1,25 @@
-export class StringPage {
+export interface IPage {
+    parser: DOMParser;
+    createEmptyPage: (title?: string) => IPage;
+    withStyle: (style: string) => IPage;
+    withStyleLink: (style: string) => IPage;
+    withHeaderSection: () => IPage;
+    withHeaderContent: (content: string) => IPage;
+    withContentSection: () => IPage;
+    withContent: (content: string) => IPage;
+}
+
+export interface IStringPage extends IPage {
+    html: string;
+    parsedHtml: Document;
+    setHtmlWithDocument: (document: Document) => void;
+}
+
+export interface IHtmlPage extends IPage {
+    document: Document;
+}
+
+export class StringPage implements IStringPage {
     html: string = '';
     parser: DOMParser = new DOMParser();
     parsedHtml: Document = this.parser.parseFromString(this.html, 'text/html');
@@ -104,7 +125,7 @@ export class StringPage {
     };
 }
 
-export class HtmlPage {
+export class HtmlPage implements IHtmlPage {
     document: Document = new Document();
     parser: DOMParser = new DOMParser();
 
