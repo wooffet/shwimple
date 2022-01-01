@@ -1,98 +1,129 @@
-export class Page {
-    constructor() {
-        this.html = "";
-    }
+export class StringPage {
+    html: string = '';
+    parser: DOMParser = new DOMParser();
+    parsedHtml: Document = this.parser.parseFromString(this.html, 'text/html');
 
-    html: string;
     //renderPipe = (...fns) => (arg) => fns.reduce((value, fn) => fn(value), arg);
-    createEmptyPage = () => {
-        this.html = `<html><head></head><body></body></html>`;
-        return this;
-    };
-    withTitle = (title: string) => {
-        if (isNullOrEmpty(title)) {
-            return this;
-        }
-        const headSection = this.html.split(`<head>`);
-        this.html = `<head>${headSection[0]}<title>${title}</title>${headSection[1]}`;
 
+    setHtmlWithDocument = (document: Document) => {
+        this.html = document.documentElement.outerHTML;
+    };
+
+    createEmptyPage = (title?: string) => {
+        let document = new Document();
+        document = document.implementation.createHTMLDocument(title);
+        this.setHtmlWithDocument(document);
         return this;
     };
+
     withStyle = (style: string) => {
         if (isNullOrEmpty(style)) {
             return this;
         }
-        const headSection = this.html.split(`<head>`);
-        this.html = `<head>${headSection[0]}<style>${style}</style>${headSection[1]}`;
+        const head = this.parsedHtml.querySelector('head');
+        const styleNode = this.parsedHtml.createElement('style');
 
+        styleNode.textContent = style;
+        head!.appendChild(styleNode);
+
+        this.setHtmlWithDocument(this.parsedHtml);
         return this;
     };
-    //TODO: make proper link tag
-    withStyleLink = (style: string) => {
-        if (isNullOrEmpty(style)) {
+
+    withStyleLink = (styleUrl: string) => {
+        if (isNullOrEmpty(styleUrl)) {
             return this;
         }
-        const headSection = this.html.split(`<head>`);
-        this.html = `<head>${headSection[0]}<style>${style}</style>${headSection[1]}`;
 
+        const head = this.parsedHtml.querySelector('head');
+        const styleNode = this.parsedHtml.createElement('link');
+        styleNode.rel = 'stylesheet';
+        styleNode.type = 'text/css';
+        styleNode.href = styleUrl;
+
+        head!.appendChild(styleNode);
+
+        this.setHtmlWithDocument(this.parsedHtml);
         return this;
     };
+
     withHeaderSection = () => {
-        const innerBody = this.html.split(`<body>`);
-        const headerSection = `<div id="header-section" class="header-section"></div>`;
-        this.html = `${innerBody[0]}<body>${headerSection}${innerBody[1]}`;
+        const body = this.parsedHtml.body;
+        const headerSectionNode = this.parsedHtml.createElement('div');
+        headerSectionNode.id = 'header-section';
+        headerSectionNode.className = 'header-section';
 
+        body.insertBefore(headerSectionNode, body.firstChild);
+
+        this.setHtmlWithDocument(this.parsedHtml);
         return this;
     };
+
     withHeaderContent = (content: string) => {
         if (isNullOrEmpty(content)) {
             return this;
         }
 
-        const hasHeaderSection = this.html.includes("header-section");
-        if (hasHeaderSection) {
-            const headerSectionSplit = this.html.split(`<div id="header-section" class="header-section">`);
-            this.html = `${headerSectionSplit[0]}<div id="header-section" class="header-section">${content}${headerSectionSplit[1]}`;
+        const body = this.parsedHtml.body;
+        const headerSectionNode = body.querySelector('#header-section');
+
+        if (headerSectionNode) {
+            headerSectionNode.textContent = content;
+            this.setHtmlWithDocument(this.parsedHtml);
         }
 
         return this;
     };
+
     withContentSection = () => {
-        const contentSection = `<div id="content-section" class="content-section"></div>`;
-        const hasHeaderSection = this.html.includes("header-section");
-        if (hasHeaderSection) {
-            const headerSectionSplit = this.html.split(`</div>`);
-            this.html = `${headerSectionSplit[0]}</div>${contentSection}${headerSectionSplit[1]}`;
-        } else {
-            const innerBody = this.html.split(`<body>`);
-            this.html = `${innerBody[0]}<body>${contentSection}${innerBody[1]}`;
-        }
+        const body = this.parsedHtml.body;
+        const contentSection = this.parsedHtml.createElement('div');
+        contentSection.id = 'content-section';
+        contentSection.className = 'content-section';
 
+        body.appendChild(contentSection);
+
+        this.setHtmlWithDocument(this.parsedHtml);
         return this;
     };
+
     withContent = (content: string) => {
         if (isNullOrEmpty(content)) {
             return this;
         }
 
-        const hasContentSection = this.html.includes("content-section");
-        if (hasContentSection) {
-            const contentSectionSplit = this.html.split(`<div id="content-section" class="content-section">`);
-            this.html = `${contentSectionSplit[0]}<div id="content-section" class="content-section">${content}${contentSectionSplit[1]}`;
+        const body = this.parsedHtml.body;
+        const contentSectionNode = body.querySelector('#content-section');
+
+        if (contentSectionNode) {
+            contentSectionNode.textContent = content;
+            this.setHtmlWithDocument(this.parsedHtml);
         }
 
         return this;
     };
-};
+}
 
-export const bootstrapPage = () => {
-    const page = new Page();
-    page.createEmptyPage().withHeaderSection().withContentSection();
-    return page;
+export class HtmlPage {
+    constructor() {
+        this.parser = new DOMParser();
+        this.document = new Document();
+    }
+
+    document: Document;
+    parser: DOMParser;
+
+    createEmptyPage = (title?: string) => {
+        this.document = this.document.implementation.createHTMLDocument(title);
+    };
+}
+
+export const bootstrapStringPage = () => {
+    return new StringPage().createEmptyPage().withHeaderSection().withContentSection();
 };
 
 const isNullOrEmpty = (value: string) => {
-    if (!value || value.trim() === "" || value.trim().length === 0) {
+    if (!value || value.trim() === '' || value.trim().length === 0) {
         return true;
     }
 
