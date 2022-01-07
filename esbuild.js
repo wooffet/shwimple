@@ -1,13 +1,12 @@
 import { build } from 'esbuild';
 
 build({
-    entryPoints: ['src/index.ts'],
+    entryPoints: ['index.ts'],
     outdir: 'dist',
     bundle: true,
     sourcemap: true,
     minify: true,
     splitting: true,
     format: 'esm',
-    target: ['esnext']
-})
-    .catch(() => process.exit(1));
+    target: ['esnext'],
+}).catch(() => process.exit(1));
