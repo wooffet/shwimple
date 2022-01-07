@@ -3,8 +3,6 @@ export interface IShwimpleDocument {
     headNode: ShwimpleHeadNode;
     bodyNode: ShwimpleBodyNode;
     childNodes: ShwimpleNode[];
-    // createBoilerplateDocument: (title?: string) => ShwimpleDocument;
-    // createEmptyDocument: () => ShwimpleDocument;
     createElement: (tag: string, id: string, className?: string) => ShwimpleNode;
     querySelectorById: (nodeId: string) => ShwimpleNode | null;
     querySelectorByIndex: (nodeIndex: number) => ShwimpleNode | null;
