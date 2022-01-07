@@ -4,7 +4,7 @@
 
 ## TODO
 
-- Implement `ShwimplePageBuilder` functions
+- Implement `ShwimplePageBuilder`
   - Implement `renderPipe` functionality
 - Implement `insertBefore`, `insertAfter`, `getParent` functions in `ShwimpleNode`
   - getParent -> always return top level node if already main parent node e.g. <html></html>
