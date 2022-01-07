@@ -1,6 +1,6 @@
 # shwimple
 
- shwimple - a simple HTML writer
+ shwimple - a simple backend HTML writer/renderer
 
 ## TODO
 
