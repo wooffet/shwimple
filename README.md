@@ -1,14 +1,15 @@
 # shwimple
 
- shwimple - a simple backend HTML writer/renderer
+shwimple - a simple backend HTML writer/renderer
 
- npm: <https://www.npmjs.com/package/shwimple>
+npm: <https://www.npmjs.com/package/shwimple>
+demo app: <https://github.com/wooffet/shwimple-demo>
 
 ## TODO
 
-- ~~Implement `ShwimplePageBuilder`~~
-  - ~~Implement `renderPipe` functionality~~
-- Implement `insertBefore`, `insertAfter`, `getParent` functions in `ShwimpleNode`
-  - getParent -> always return top level node if already main parent node e.g. <html></html>
-- ~~Move `ShwimpleDocument.createBoilerplateDocument` to semantic HTML~~
-- Add tests
+-   ~~Implement `ShwimplePageBuilder`~~
+    -   ~~Implement `renderPipe` functionality~~
+-   Implement `insertBefore`, `insertAfter`, `getParent` functions in `ShwimpleNode`
+    -   getParent -> always return top level node if already main parent node e.g. <html></html>
+-   ~~Move `ShwimpleDocument.createBoilerplateDocument` to semantic HTML~~
+-   Add tests
