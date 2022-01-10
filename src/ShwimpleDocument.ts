@@ -4,11 +4,11 @@ export interface IShwimpleDocument {
     bodyNode: ShwimpleBodyNode;
     childNodes: ShwimpleNode[];
     createElement: (tag: string, id: string, className?: string) => ShwimpleNode;
-    querySelectorById: (nodeId: string) => ShwimpleNode | null;
-    querySelectorByIndex: (nodeIndex: number) => ShwimpleNode | null;
+    querySelectorById: (nodeId: string) => ShwimpleNode | undefined;
+    querySelectorByIndex: (nodeIndex: number) => ShwimpleNode | undefined;
     getHead: () => ShwimpleNode;
     getBody: () => ShwimpleNode;
-    getHtmlAsString: () => string | null;
+    getHtmlAsString: () => string | undefined;
 }
 
 export interface IShwimpleNode {
@@ -45,14 +45,13 @@ export class ShwimpleDocument implements IShwimpleDocument {
         this.bodyNode = new ShwimpleBodyNode();
         this.childNodes.push(this.headNode);
         this.childNodes.push(this.bodyNode);
-        this.html = '';
     }
 
     static createBoilerplateDocument = (title?: string) => {
         const doc = new ShwimpleDocument();
         const titleNode = new ShwimpleNode('title', title);
-        const headerSectionNode = new ShwimpleElementNode('div', 'header-section', 'header-section');
-        const contentSectionNode = new ShwimpleElementNode('div', 'content-section', 'content-section');
+        const headerSectionNode = new ShwimpleElementNode('header', 'header-section', 'header-section');
+        const contentSectionNode = new ShwimpleElementNode('main', 'content-section', 'content-section');
         doc.headNode.appendChild(titleNode);
         doc.bodyNode.appendChild(headerSectionNode);
         doc.bodyNode.appendChild(contentSectionNode);
@@ -65,7 +64,7 @@ export class ShwimpleDocument implements IShwimpleDocument {
         return new ShwimpleElementNode(tag, id, className);
     };
     querySelectorById = (nodeId: string) => {
-        let result: ShwimpleNode | null = null;
+        let result: ShwimpleNode | undefined = undefined;
         const node = this.childNodes.find((n) => n instanceof ShwimpleElementNode && n.id === nodeId);
 
         if (node) {
@@ -75,7 +74,7 @@ export class ShwimpleDocument implements IShwimpleDocument {
         return result;
     };
     querySelectorByIndex = (nodeIndex: number) => {
-        let result: ShwimpleNode | null = null;
+        let result: ShwimpleNode | undefined = undefined;
 
         if (nodeIndex > this.childNodes.length) {
             return result;
@@ -91,10 +90,10 @@ export class ShwimpleDocument implements IShwimpleDocument {
     getHead = () => this.headNode;
     getBody = () => this.bodyNode;
 
-    private html: string;
+    private html: string = '';
     getHtmlAsString = () => {
         if (!this.mainNode) {
-            return null;
+            return undefined;
         }
 
         this.html = `<${this.mainNode.tag}>`;

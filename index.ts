@@ -1,1 +1,10 @@
-export { ShwimplePageBuilder, ShwimpleDocument, ShwimpleNode, ShwimpleElementNode, ShwimpleHeadNode, ShwimpleBodyNode } from './src/Shwimple';
+export {
+    ShwimpleBuildFunction,
+    ShwimplePageBuilder,
+    TryAddFuncResult,
+    ShwimpleDocument,
+    ShwimpleNode,
+    ShwimpleElementNode,
+    ShwimpleHeadNode,
+    ShwimpleBodyNode,
+} from './src/Shwimple';

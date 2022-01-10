@@ -1,4 +1,13 @@
-import { ShwimplePageBuilder } from './ShwimplePageBuilder';
+import { ShwimpleBuildFunction, ShwimplePageBuilder, TryAddFuncResult } from './ShwimplePageBuilder';
 import { ShwimpleDocument, ShwimpleNode, ShwimpleElementNode, ShwimpleHeadNode, ShwimpleBodyNode } from './ShwimpleDocument';
 
-export { ShwimplePageBuilder, ShwimpleDocument, ShwimpleNode, ShwimpleElementNode, ShwimpleHeadNode, ShwimpleBodyNode };
+export {
+    ShwimpleBuildFunction,
+    ShwimplePageBuilder,
+    TryAddFuncResult,
+    ShwimpleDocument,
+    ShwimpleNode,
+    ShwimpleElementNode,
+    ShwimpleHeadNode,
+    ShwimpleBodyNode,
+};
