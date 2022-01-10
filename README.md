@@ -2,6 +2,8 @@
 
  shwimple - a simple backend HTML writer/renderer
 
+ npm: <https://www.npmjs.com/package/shwimple>
+
 ## TODO
 
 - ~~Implement `ShwimplePageBuilder`~~
