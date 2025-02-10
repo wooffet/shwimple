@@ -28,7 +28,7 @@
     },
     "homepage": "https://github.com/wooffet/shwimple#readme",
     "devDependencies": {
-        "esbuild": "^0.13.13",
+        "esbuild": "^0.25.0",
         "rimraf": "^3.0.2",
         "typescript": "^4.4.4"
     },
