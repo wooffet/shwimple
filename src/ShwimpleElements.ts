@@ -3,10 +3,13 @@ import { ShwimpleElementNode, ShwimpleNode, ShwimpleTextNode } from './ShwimpleD
 export type ShwimpleAttributes = {
     id?: string;
     className?: string;
+    classList?: string[];
     attrs?: Record<string, string>;
 };
 
 export type ShwimpleChild = ShwimpleNode | string | number | boolean | null | undefined;
+
+export type ShwimpleClassValue = string | number | boolean | null | undefined;
 
 type ElementFactory = (attrsOrChild?: ShwimpleAttributes | ShwimpleChild, ...children: ShwimpleChild[]) => ShwimpleNode;
 
@@ -41,6 +44,28 @@ const normalizeChildren = (children: ShwimpleChild[]) => {
     return nodes;
 };
 
+export const cx = (...values: ShwimpleClassValue[]) =>
+    values
+        .flatMap((value) => {
+            if (value === null || value === undefined || value === false) {
+                return [];
+            }
+
+            if (typeof value === 'number') {
+                return [String(value)];
+            }
+
+            if (typeof value === 'boolean') {
+                return [];
+            }
+
+            return String(value)
+                .split(' ')
+                .map((entry) => entry.trim())
+                .filter((entry) => entry.length > 0);
+        })
+        .join(' ');
+
 export const text = (value: string | number | boolean) => new ShwimpleTextNode(String(value));
 
 export const el = (tag: string, attrsOrChild?: ShwimpleAttributes | ShwimpleChild, ...restChildren: ShwimpleChild[]) => {
@@ -56,7 +81,11 @@ export const el = (tag: string, attrsOrChild?: ShwimpleAttributes | ShwimpleChil
         children = restChildren;
     }
 
-    const node = attrs ? new ShwimpleElementNode(tag, attrs.id ?? '', attrs.className) : new ShwimpleNode(tag);
+    const normalizedClassList = attrs?.classList?.filter((value) => value && value.trim().length > 0) ?? [];
+    const classListValue = normalizedClassList.length > 0 ? normalizedClassList.join(' ') : undefined;
+    const combinedClassName = [attrs?.className, classListValue].filter(Boolean).join(' ') || undefined;
+
+    const node = attrs ? new ShwimpleElementNode(tag, attrs.id ?? '', combinedClassName) : new ShwimpleNode(tag);
 
     if (attrs?.attrs) {
         node.attributes = { ...attrs.attrs };
@@ -76,6 +105,9 @@ const createElementFactory =
 export const div = createElementFactory('div');
 export const span = createElementFactory('span');
 export const section = createElementFactory('section');
+export const mainElement = createElementFactory('main');
+export const article = createElementFactory('article');
+export const aside = createElementFactory('aside');
 export const header = createElementFactory('header');
 export const footer = createElementFactory('footer');
 export const nav = createElementFactory('nav');

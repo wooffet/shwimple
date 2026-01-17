@@ -33,6 +33,8 @@ export interface IShwimpleHeadElementNode extends IShwimpleNode {
     href?: string;
 }
 
+export type ShwimpleBoilerplateLayout = 'standard' | 'docs' | 'landing';
+
 export class ShwimpleDocument implements IShwimpleDocument {
     mainNode: ShwimpleNode;
     headNode: ShwimpleHeadNode;
@@ -48,14 +50,35 @@ export class ShwimpleDocument implements IShwimpleDocument {
         this.childNodes.push(this.bodyNode);
     }
 
-    static createBoilerplateDocument = (title?: string) => {
+    static createBoilerplateDocument = (title?: string, layout: ShwimpleBoilerplateLayout = 'standard') => {
         const doc = new ShwimpleDocument();
-        const titleNode = new ShwimpleNode('title', title);
+        const charsetNode = new ShwimpleNode('meta', undefined, { charset: 'utf-8' });
+        const viewportNode = new ShwimpleNode('meta', undefined, {
+            name: 'viewport',
+            content: 'width=device-width, initial-scale=1',
+        });
+        const titleNode = new ShwimpleNode('title', title ?? '');
         const headerSectionNode = new ShwimpleElementNode('header', 'header-section', 'header-section');
         const contentSectionNode = new ShwimpleElementNode('main', 'content-section', 'content-section');
+        const footerSectionNode = new ShwimpleElementNode('footer', 'footer-section', 'footer-section');
+        doc.headNode.appendChild(charsetNode);
+        doc.headNode.appendChild(viewportNode);
         doc.headNode.appendChild(titleNode);
+
+        if (layout !== 'landing') {
+            const navSectionNode = new ShwimpleElementNode('nav', 'nav-section', 'nav-section');
+            headerSectionNode.appendChild(navSectionNode);
+        }
+
         doc.bodyNode.appendChild(headerSectionNode);
         doc.bodyNode.appendChild(contentSectionNode);
+
+        if (layout === 'docs') {
+            const asideSectionNode = new ShwimpleElementNode('aside', 'aside-section', 'aside-section');
+            doc.bodyNode.appendChild(asideSectionNode);
+        }
+
+        doc.bodyNode.appendChild(footerSectionNode);
         return doc;
     };
     static createEmptyDocument = () => {

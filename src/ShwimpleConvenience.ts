@@ -1,4 +1,11 @@
-import { ShwimpleBodyNode, ShwimpleDocument, ShwimpleElementNode, ShwimpleHeadNode, ShwimpleNode } from './ShwimpleDocument';
+import {
+    ShwimpleBodyNode,
+    ShwimpleBoilerplateLayout,
+    ShwimpleDocument,
+    ShwimpleElementNode,
+    ShwimpleHeadNode,
+    ShwimpleNode,
+} from './ShwimpleDocument';
 import { ShwimpleBuildFunction, ShwimplePageBuilder } from './ShwimplePageBuilder';
 import { el, text } from './ShwimpleElements';
 
@@ -119,6 +126,30 @@ export const definePage = (
     }
 
     const builder = new ShwimplePageBuilder(title);
+    buildSections.forEach((section) => builder.addRenderFunction(section));
+
+    return {
+        render: () => builder.build(),
+        renderToString: () => builder.buildAsString(),
+        builder,
+    };
+};
+
+export const definePageWithBoilerplate = (
+    layout: ShwimpleBoilerplateLayout,
+    titleOrSection?: string | ShwimpleBuildFunction,
+    ...sections: ShwimpleBuildFunction[]
+): ShwimplePage => {
+    let title: string | undefined;
+    let buildSections: ShwimpleBuildFunction[] = sections;
+
+    if (typeof titleOrSection === 'string') {
+        title = titleOrSection;
+    } else if (typeof titleOrSection === 'function') {
+        buildSections = [titleOrSection, ...sections];
+    }
+
+    const builder = new ShwimplePageBuilder(title, layout);
     buildSections.forEach((section) => builder.addRenderFunction(section));
 
     return {

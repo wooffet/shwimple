@@ -1,4 +1,4 @@
-import { ShwimpleDocument } from './ShwimpleDocument';
+import { ShwimpleBoilerplateLayout, ShwimpleDocument } from './ShwimpleDocument';
 
 export type ShwimpleBuildFunction = {
     id?: string;
@@ -19,8 +19,8 @@ export class ShwimplePageBuilder {
     page: ShwimpleDocument;
     buildFunctions: ShwimpleBuildFunction[] = [];
 
-    constructor(title?: string) {
-        this.page = ShwimpleDocument.createBoilerplateDocument(title);
+    constructor(title?: string, layout: ShwimpleBoilerplateLayout = 'standard') {
+        this.page = ShwimpleDocument.createBoilerplateDocument(title, layout);
     }
 
     addRenderFunction = (func: ShwimpleBuildFunction) => {

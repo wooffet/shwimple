@@ -8,16 +8,45 @@ demo app: <https://github.com/wooffet/shwimple-demo>
 ## Usage (component-style helpers)
 
 ```ts
-import { definePage, component, head, body, main, el, h1, p, title } from 'shwimple';
+import { definePage, component, head, body, main, el, h1, p, title, cx } from 'shwimple';
 
 const Hero = component('Hero', () =>
-    el('section', { id: 'hero', className: 'hero' }, h1('Build from the backend'), p('No frontend logic required.'))
+    el(
+        'section',
+        { id: 'hero', className: cx('hero', 'text-center', 'mt-10') },
+        h1('Build from the backend'),
+        p('No frontend logic required.')
+    )
 );
 
 const SiteHead = component('SiteHead', () => title('Shwimple Demo'));
 
 const page = definePage('Shwimple Demo', head(SiteHead), body(main(Hero)));
 const html = page.renderToString();
+```
+
+## Boilerplate layouts
+
+Built-in layouts: `standard`, `docs`, `landing`.
+
+```ts
+import { definePageWithBoilerplate, head, body, main } from 'shwimple';
+
+const page = definePageWithBoilerplate(
+    'docs',
+    'Docs Site',
+    head(() => null),
+    body(main(() => null))
+);
+const html = page.renderToString();
+```
+
+### Run layout examples
+
+```bash
+npm run example:standard
+npm run example:docs
+npm run example:landing
 ```
 
 ## TODO
