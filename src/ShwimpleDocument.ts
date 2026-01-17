@@ -19,6 +19,7 @@ export interface IShwimpleNode {
     getParent: () => ShwimpleNode; // TODO: Always return top level node if already main parent node e.g. <html></html>
     tag: string;
     textContent?: string;
+    attributes?: Record<string, string>;
 }
 
 export interface IShwimpleElementNode extends IShwimpleNode {
@@ -108,7 +109,16 @@ export class ShwimpleDocument implements IShwimpleDocument {
     };
 
     private parseChildNodes = (node: ShwimpleNode) => {
-        this.html += `<${node.tag}>`;
+        if (node instanceof ShwimpleTextNode) {
+            if (node.textContent) {
+                this.html += node.textContent;
+            }
+
+            return;
+        }
+
+        const attributes = this.getAttributes(node);
+        this.html += `<${node.tag}${attributes}>`;
 
         if (node.textContent) {
             this.html += node.textContent;
@@ -122,16 +132,45 @@ export class ShwimpleDocument implements IShwimpleDocument {
 
         this.html += `</${node.tag}>`;
     };
+
+    private getAttributes = (node: ShwimpleNode) => {
+        const attributes: Record<string, string> = { ...(node.attributes ?? {}) };
+
+        if (node instanceof ShwimpleElementNode) {
+            if (node.id) {
+                attributes.id = node.id;
+            }
+
+            if (node.className) {
+                attributes.class = node.className;
+            }
+        }
+
+        const pairs = Object.entries(attributes)
+            .filter(([, value]) => value !== undefined && value !== '')
+            .map(([key, value]) => {
+                const attributeKey = key === 'className' ? 'class' : key;
+                return `${attributeKey}="${value}"`;
+            });
+
+        if (pairs.length === 0) {
+            return '';
+        }
+
+        return ` ${pairs.join(' ')}`;
+    };
 }
 
 export class ShwimpleNode implements IShwimpleNode {
     children?: ShwimpleNode[];
     tag: string;
     textContent?: string;
+    attributes?: Record<string, string>;
 
-    constructor(tag: string, textContent?: string) {
+    constructor(tag: string, textContent?: string, attributes?: Record<string, string>) {
         this.tag = tag;
         this.textContent = textContent;
+        this.attributes = attributes;
     }
 
     appendChild = (child: ShwimpleNode) => {
@@ -152,8 +191,8 @@ export class ShwimpleElementNode extends ShwimpleNode implements IShwimpleElemen
     className?: string;
     id: string;
 
-    constructor(tag: string, id: string, className?: string, textContent?: string) {
-        super(tag, textContent);
+    constructor(tag: string, id: string, className?: string, textContent?: string, attributes?: Record<string, string>) {
+        super(tag, textContent, attributes);
         this.id = id;
         this.className = className;
     }
@@ -169,6 +208,12 @@ export class ShwimpleHeadElementNode extends ShwimpleNode implements IShwimpleHe
         this.rel = rel;
         this.typeName = typeName;
         this.href = href;
+    }
+}
+
+export class ShwimpleTextNode extends ShwimpleNode implements IShwimpleNode {
+    constructor(textContent: string) {
+        super('#text', textContent);
     }
 }
 
