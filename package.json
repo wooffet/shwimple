@@ -13,7 +13,8 @@
         "example:standard": "npm run build && node ./examples/layout-standard.js",
         "example:docs": "npm run build && node ./examples/layout-docs.js",
         "example:landing": "npm run build && node ./examples/layout-landing.js",
-        "example:charts": "npm run build && node ./examples/chartjs-cdn.js"
+        "example:charts": "npm run build && node ./examples/chartjs-cdn.js",
+        "prepublishOnly": "npm run build"
     },
     "repository": {
         "type": "git",
@@ -32,6 +33,9 @@
         "url": "https://github.com/wooffet/shwimple/issues"
     },
     "homepage": "https://github.com/wooffet/shwimple#readme",
+    "files": [
+        "dist"
+    ],
     "devDependencies": {
         "esbuild": "^0.27.2",
         "rimraf": "^6.1.2",
