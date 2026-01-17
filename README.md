@@ -54,6 +54,8 @@ npm run example:standard
 npm run example:docs
 npm run example:landing
 npm run example:charts
+npm run example:htmx
+npm run example:alpine
 ```
 
 ## Example: Chart.js from CDN
@@ -61,7 +63,7 @@ npm run example:charts
 This example pulls Chart.js from a CDN and renders a few charts with fake data.
 
 ```ts
-import { definePageWithBoilerplate, head, body, main, el, h1, p, script } from 'shwimple';
+import { definePageWithBoilerplate, head, body, main, el, h1, p, script, style } from 'shwimple';
 
 const Charts = () =>
     el(
@@ -124,6 +126,99 @@ const page = definePageWithBoilerplate(
 );
 
 const html = page.renderToString();
+```
+
+## Reactivity (3rd-party scripts)
+
+shwimple keeps the core non-reactive. For interactive behavior, use lightweight libraries such as htmx or Alpine.js.
+
+```ts
+import { el, dataAttrs, ariaAttrs } from 'shwimple';
+
+const button = el(
+    'button',
+    {
+        className: 'btn',
+        attrs: {
+            ...dataAttrs({ action: 'toggle', target: 'details' }),
+            ...ariaAttrs({ expanded: false, controls: 'details' }),
+        },
+    },
+    'Toggle'
+);
+```
+
+### Example: htmx (CDN)
+
+```ts
+import { definePageWithBoilerplate, head, body, main, el, h1, p, script } from 'shwimple';
+
+const HtmxDemo = () =>
+    el(
+        'section',
+        { id: 'htmx-demo', className: 'demo' },
+        h1('htmx Demo'),
+        p('This button uses htmx attributes.'),
+        el(
+            'button',
+            {
+                className: 'btn',
+                attrs: {
+                    'hx-get': '/demo',
+                    'hx-target': '#htmx-output',
+                    'hx-swap': 'innerHTML',
+                },
+            },
+            'Load content'
+        ),
+        el('div', { id: 'htmx-output', className: 'output' }, 'Waiting for response...')
+    );
+
+const page = definePageWithBoilerplate(
+    'standard',
+    'htmx Demo',
+    head(() => [
+        style(`
+            body { font-family: system-ui, sans-serif; padding: 2rem; }
+            .demo { display: grid; gap: 0.75rem; max-width: 480px; }
+            .btn { background: #2563eb; color: white; border: none; padding: 0.5rem 0.75rem; border-radius: 0.5rem; }
+            .output { padding: 0.5rem 0.75rem; background: #f3f4f6; border-radius: 0.5rem; }
+        `),
+        script({ attrs: { src: 'https://unpkg.com/htmx.org@1.9.10' } }),
+    ]),
+    body(main(HtmxDemo))
+);
+```
+
+### Example: Alpine.js (CDN)
+
+```ts
+import { definePageWithBoilerplate, head, body, main, el, h1, p, script, style } from 'shwimple';
+
+const AlpineDemo = () =>
+    el(
+        'section',
+        { id: 'alpine-demo', className: 'demo', attrs: { 'x-data': '{ count: 0 }' } },
+        h1('Alpine.js Demo'),
+        p('A simple counter with x-data and x-on.'),
+        el('button', { className: 'btn', attrs: { 'x-on:click': 'count++' } }, 'Increment'),
+        el('span', { className: 'count', attrs: { 'x-text': 'count' } })
+    );
+
+const page = definePageWithBoilerplate(
+    'standard',
+    'Alpine Demo',
+    head(() => [
+        style(`
+            body { font-family: system-ui, sans-serif; padding: 2rem; }
+            .demo { display: grid; gap: 0.75rem; max-width: 480px; }
+            .btn { background: #111827; color: white; border: none; padding: 0.5rem 0.75rem; border-radius: 0.5rem; }
+            .count { font-weight: 600; }
+        `),
+        script({ attrs: { defer: '', src: 'https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js' } }),
+    ]),
+    body(main(AlpineDemo))
+);
 ```
 
 ## TODO

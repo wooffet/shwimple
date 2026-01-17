@@ -1,6 +1,6 @@
 {
     "name": "shwimple",
-    "version": "4.0.0",
+    "version": "4.1.0",
     "description": "shwimple - a simple HTML writer",
     "main": "dist/index.js",
     "module": "dist/index.js",
@@ -14,6 +14,8 @@
         "example:docs": "npm run build && node ./examples/layout-docs.js",
         "example:landing": "npm run build && node ./examples/layout-landing.js",
         "example:charts": "npm run build && node ./examples/chartjs-cdn.js",
+        "example:htmx": "npm run build && node ./examples/htmx-cdn.js",
+        "example:alpine": "npm run build && node ./examples/alpine-cdn.js",
         "prepublishOnly": "npm run build"
     },
     "repository": {

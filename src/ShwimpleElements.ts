@@ -10,6 +10,7 @@ export type ShwimpleAttributes = {
 export type ShwimpleChild = ShwimpleNode | string | number | boolean | null | undefined;
 
 export type ShwimpleClassValue = string | number | boolean | null | undefined;
+export type ShwimpleAttributeMap = Record<string, string | number | boolean | null | undefined>;
 
 type ElementFactory = (attrsOrChild?: ShwimpleAttributes | ShwimpleChild, ...children: ShwimpleChild[]) => ShwimpleNode;
 
@@ -65,6 +66,33 @@ export const cx = (...values: ShwimpleClassValue[]) =>
                 .filter((entry) => entry.length > 0);
         })
         .join(' ');
+
+const normalizeAttributeValue = (value: string | number | boolean | null | undefined) => {
+    if (value === null || value === undefined || value === false) {
+        return undefined;
+    }
+
+    if (value === true) {
+        return '';
+    }
+
+    return String(value);
+};
+
+const prefixAttributes = (prefix: string, attrs: ShwimpleAttributeMap) =>
+    Object.entries(attrs).reduce<Record<string, string>>((result, [key, value]) => {
+        const normalizedValue = normalizeAttributeValue(value);
+
+        if (normalizedValue === undefined) {
+            return result;
+        }
+
+        result[`${prefix}${key}`] = normalizedValue;
+        return result;
+    }, {});
+
+export const dataAttrs = (attrs: ShwimpleAttributeMap) => prefixAttributes('data-', attrs);
+export const ariaAttrs = (attrs: ShwimpleAttributeMap) => prefixAttributes('aria-', attrs);
 
 export const text = (value: string | number | boolean) => new ShwimpleTextNode(String(value));
 
