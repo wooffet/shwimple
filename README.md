@@ -52,11 +52,7 @@ const html = page.renderToString();
 ```ts
 import { head, metaCharset, metaViewport, stylesheet } from 'shwimple';
 
-const headBlock = head(() => [
-    metaCharset(),
-    metaViewport(),
-    stylesheet('https://cdn.example.com/app.css'),
-]);
+const headBlock = head(() => [metaCharset(), metaViewport(), stylesheet('https://cdn.example.com/app.css')]);
 ```
 
 ### Run layout examples
@@ -235,7 +231,4 @@ const page = definePageWithBoilerplate(
 
 ## TODO
 
--   Add HTML escaping for text and attributes
--   Implement recursive query helpers (e.g., `querySelectorById`)
--   Add convenience helpers for head metadata (charset, viewport, stylesheet)
 -   Add a plugin system to extend functionality without changing core behavior
