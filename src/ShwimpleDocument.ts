@@ -5,6 +5,9 @@ export interface IShwimpleDocument {
     childNodes: ShwimpleNode[];
     createElement: (tag: string, id: string, className?: string) => ShwimpleNode;
     querySelectorById: (nodeId: string) => ShwimpleNode | undefined;
+    querySelectorAllById: (nodeId: string) => ShwimpleNode[];
+    querySelectorByTag: (tag: string) => ShwimpleNode | undefined;
+    querySelectorAllByTag: (tag: string) => ShwimpleNode[];
     querySelectorByIndex: (nodeIndex: number) => ShwimpleNode | undefined;
     getHead: () => ShwimpleNode;
     getBody: () => ShwimpleNode;
@@ -88,15 +91,15 @@ export class ShwimpleDocument implements IShwimpleDocument {
         return new ShwimpleElementNode(tag, id, className);
     };
     querySelectorById = (nodeId: string) => {
-        let result: ShwimpleNode | undefined = undefined;
-        const node = this.childNodes.find((n) => n instanceof ShwimpleElementNode && n.id === nodeId);
-
-        if (node) {
-            result = node;
-        }
-
-        return result;
+        const matches = this.querySelectorAllById(nodeId);
+        return matches[0];
     };
+    querySelectorAllById = (nodeId: string) => this.findNodes((node) => node instanceof ShwimpleElementNode && node.id === nodeId);
+    querySelectorByTag = (tag: string) => {
+        const matches = this.querySelectorAllByTag(tag);
+        return matches[0];
+    };
+    querySelectorAllByTag = (tag: string) => this.findNodes((node) => node.tag === tag);
     querySelectorByIndex = (nodeIndex: number) => {
         let result: ShwimpleNode | undefined = undefined;
 
@@ -113,6 +116,29 @@ export class ShwimpleDocument implements IShwimpleDocument {
     };
     getHead = () => this.headNode;
     getBody = () => this.bodyNode;
+
+    private findNodes = (predicate: (node: ShwimpleNode) => boolean) => {
+        const matches: ShwimpleNode[] = [];
+        const queue: ShwimpleNode[] = [...this.childNodes];
+
+        while (queue.length > 0) {
+            const current = queue.shift();
+
+            if (!current) {
+                continue;
+            }
+
+            if (predicate(current)) {
+                matches.push(current);
+            }
+
+            if (current.children && current.children.length > 0) {
+                queue.push(...current.children);
+            }
+        }
+
+        return matches;
+    };
 
     private html: string = '';
     getHtmlAsString = () => {
@@ -131,10 +157,12 @@ export class ShwimpleDocument implements IShwimpleDocument {
         return this.html;
     };
 
-    private parseChildNodes = (node: ShwimpleNode) => {
+    private parseChildNodes = (node: ShwimpleNode, rawText: boolean = false) => {
+        const isRawTextNode = rawText || node.tag === 'script' || node.tag === 'style';
+
         if (node instanceof ShwimpleTextNode) {
             if (node.textContent) {
-                this.html += node.textContent;
+                this.html += isRawTextNode ? node.textContent : this.escapeHtml(node.textContent);
             }
 
             return;
@@ -144,17 +172,25 @@ export class ShwimpleDocument implements IShwimpleDocument {
         this.html += `<${node.tag}${attributes}>`;
 
         if (node.textContent) {
-            this.html += node.textContent;
+            this.html += isRawTextNode ? node.textContent : this.escapeHtml(node.textContent);
         }
 
         if (node.children && node.children.length > 0) {
             node.children.forEach((child) => {
-                this.parseChildNodes(child);
+                this.parseChildNodes(child, isRawTextNode);
             });
         }
 
         this.html += `</${node.tag}>`;
     };
+
+    private escapeHtml = (value: string) =>
+        value
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
 
     private getAttributes = (node: ShwimpleNode) => {
         const attributes: Record<string, string> = { ...(node.attributes ?? {}) };
@@ -173,7 +209,7 @@ export class ShwimpleDocument implements IShwimpleDocument {
             .filter(([, value]) => value !== undefined && value !== '')
             .map(([key, value]) => {
                 const attributeKey = key === 'className' ? 'class' : key;
-                return `${attributeKey}="${value}"`;
+                return `${attributeKey}="${this.escapeHtml(value)}"`;
             });
 
         if (pairs.length === 0) {

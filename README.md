@@ -47,6 +47,18 @@ const page = definePageWithBoilerplate(
 const html = page.renderToString();
 ```
 
+### Head metadata helpers
+
+```ts
+import { head, metaCharset, metaViewport, stylesheet } from 'shwimple';
+
+const headBlock = head(() => [
+    metaCharset(),
+    metaViewport(),
+    stylesheet('https://cdn.example.com/app.css'),
+]);
+```
+
 ### Run layout examples
 
 ```bash
@@ -226,3 +238,4 @@ const page = definePageWithBoilerplate(
 -   Add HTML escaping for text and attributes
 -   Implement recursive query helpers (e.g., `querySelectorById`)
 -   Add convenience helpers for head metadata (charset, viewport, stylesheet)
+-   Add a plugin system to extend functionality without changing core behavior

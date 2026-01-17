@@ -162,3 +162,12 @@ export const meta = createElementFactory('meta');
 export const link = createElementFactory('link');
 export const script = createElementFactory('script');
 export const style = createElementFactory('style');
+
+export const metaCharset = (charset: string = 'utf-8') =>
+    meta({ attrs: { charset } });
+
+export const metaViewport = (content: string = 'width=device-width, initial-scale=1') =>
+    meta({ attrs: { name: 'viewport', content } });
+
+export const stylesheet = (href: string) =>
+    link({ attrs: { rel: 'stylesheet', href } });
