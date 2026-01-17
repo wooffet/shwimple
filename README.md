@@ -125,3 +125,9 @@ const page = definePageWithBoilerplate(
 
 const html = page.renderToString();
 ```
+
+## TODO
+
+-   Add HTML escaping for text and attributes
+-   Implement recursive query helpers (e.g., `querySelectorById`)
+-   Add convenience helpers for head metadata (charset, viewport, stylesheet)
